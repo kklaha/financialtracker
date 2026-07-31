@@ -2,6 +2,7 @@ package org.example;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Transaction {
@@ -31,51 +32,28 @@ public class Transaction {
         );
     }
 
-    public Category getCategory() {
-        return category;
-    }
+    public Category getCategory() {return category;}
+    public UUID getId() {return id;}
+    public BigDecimal getAmount() {return amount;}
+    public String getDescription() {return description;}
+    public TransactionType getType() {return type;}
+    public LocalDateTime getDateTime() {return dateTime;}
+    public void setId(UUID id) {this.id = id;}
+    public void setAmount(BigDecimal amount) {this.amount = amount;}
+    public void setCategory(Category category) {this.category = category;}
+    public void setDateTime(LocalDateTime dateTime) {this.dateTime = dateTime;}
+    public void setDescription(String description) {this.description = description;}
+    public void setType(TransactionType type) {this.type = type;}
 
-    public UUID getId() {
-        return id;
+    @Override
+    public boolean equals(Object o){
+        if(o==null || !(o instanceof Transaction)) return false;
+        if(this.getClass()==o) return true;
+        Transaction t=(Transaction) o;
+        return Objects.equals(id,t.id);
     }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setType(TransactionType type) {
-        this.type = type;
+    @Override
+    public int hashCode(){
+        return Objects.hash(id);
     }
 }
