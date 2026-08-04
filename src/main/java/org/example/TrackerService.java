@@ -2,8 +2,8 @@ package org.example;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TrackerService {
     private final TrackerRepository repository;
@@ -12,7 +12,7 @@ public class TrackerService {
         this.repository=repository;
     }
 
-    public BigDecimal totalIncome(){
+    public BigDecimal currentBalance(){
         List<Transaction> allTransactions=repository.findAll();
         BigDecimal income= allTransactions.stream().filter(t->t.getType()==TransactionType.INCOME).
                 map(Transaction::getAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
@@ -38,6 +38,16 @@ public class TrackerService {
         }else{
             System.out.println("Лимит не превышен, осталось до лимита: "+category.getMontlyLimit().subtract(sum));
         }
+    }
+    public Map<Category,BigDecimal> getExpensesByCategoryThisMonth(){
+        LocalDateTime monthStart=LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+
+        return repository.findAll().stream().filter(t->t.getType()==TransactionType.EXPENSE).
+                filter(t->t.getDateTime().isAfter(monthStart)).collect(Collectors.groupingBy(Transaction::getCategory,
+                        Collectors.reducing(BigDecimal.ZERO,Transaction::getAmount,BigDecimal::add)));
+    }
+    public List<Transaction> getAllTransactions() {
+        return repository.findAll();
     }
 
 }
